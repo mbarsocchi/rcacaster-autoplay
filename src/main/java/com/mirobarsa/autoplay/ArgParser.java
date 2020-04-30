@@ -41,7 +41,7 @@ class ArgParser {
             System.out.println("Missing Chrome driver path or url. You can pass a property files via command line\n"
                     + "or set the property using java jvm options:\n"
                     + "-Dwebdriver.chrome.driver=\n"
-                    + "-D=caster.url\n\n");
+                    + "-Dcaster.url=\n\n");
             return;
         }
         System.setProperty("webdriver.chrome.driver", chromeDriver);
