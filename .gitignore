@@ -1,2 +1,4 @@
 /target/
 .DS_Store
+nbactions.xml
+src/main/resources/config.properties

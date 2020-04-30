@@ -5,11 +5,18 @@
  */
 package com.mirobarsa.autoplay;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.lang.SystemUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 /**
  *
@@ -30,9 +37,22 @@ public class BrowserProcess {
         PAUSED;
     }
 
-    public BrowserProcess(WebDriver driver, String url) {
-        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-        this.driver = driver;
+    private WebDriver initializeDriver() {
+        HashMap<String, Object> chromePrefs = new HashMap<>();
+        ChromeOptions options = new ChromeOptions();
+        options.setExperimentalOption("prefs", chromePrefs);
+        options.addArguments("--start-maximized");
+        options.addArguments("disable-infobars");
+        options.addArguments("--ignore-certificate-errors");
+        options.addArguments("disable-web-security");
+        options.addArguments("disable-popup-blocking");
+        ChromeDriver chromeDriver = new ChromeDriver(options);
+        chromeDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        return chromeDriver;
+    }
+
+    public BrowserProcess(String url) {
+        this.driver = initializeDriver();
         this.driver.get(url);
         audioEl = By.id("jp_audio_0");
         pauseBtn = By.xpath("//a[@class=\"jp-pause\"]");
@@ -96,5 +116,18 @@ public class BrowserProcess {
             }
         }
         this.evaluateStatus();
+    }
+
+    void closeAll() {
+        String cmd = "pkill chromedriver";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            cmd = "taskkill /F /IM ChromeDriver.exe";
+        }
+        try {
+            driver.quit();
+            Runtime.getRuntime().exec(cmd);
+        } catch (IOException ex) {
+            Logger.getLogger(BrowserProcess.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
