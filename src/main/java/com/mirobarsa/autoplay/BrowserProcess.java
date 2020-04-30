@@ -108,7 +108,7 @@ public class BrowserProcess {
         return status;
     }
 
-    public void play() {
+    private void play() {
         List<WebElement> playElements = driver.findElements(playBtn);
         if (!playElements.isEmpty()) {
             if (playElements.get(0).isDisplayed()) {

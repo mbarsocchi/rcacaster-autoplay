@@ -21,29 +21,34 @@ class ArgParser {
 
     ArgParser(String[] args) throws FileNotFoundException, IOException {
         String propertyPath = null;
+        String chromeDriver;
+        Properties prop = new Properties();
         if (args.length == 0) {
-            System.out.println("ERROR. No property file given");
-            propertyPath = "/Users/mbarsocchi/My_projects/rcacaster-autoplay/src/main/resources/config.properties";
+            chromeDriver = System.getProperty("webdriver.chrome.driver");
+            casterUrl = System.getProperty("caster.url");
         } else {
             propertyPath = args[0];
+            InputStream input = new FileInputStream(propertyPath);
+            if (input == null) {
+                System.out.println("Sorry, unable to find " + propertyPath);
+                return;
+            }
+            prop.load(input);
+            chromeDriver = prop.getProperty("webdriver.chrome.driver");
+            casterUrl = prop.getProperty("caster.url");
         }
-
-        InputStream input = new FileInputStream(propertyPath);
-        if (input == null) {
-            System.out.println("Sorry, unable to find " + propertyPath);
+        if (chromeDriver == null || chromeDriver.equals("") ||casterUrl == null || casterUrl.equals("")  ){
+            System.out.println("Missing Chrome driver path or url. You can pass a property files via command line\n"
+                    + "or set the property using java jvm options:\n"
+                    + "-Dwebdriver.chrome.driver=\n"
+                    + "-D=caster.url\n\n");
             return;
         }
-
-        Properties prop = new Properties();
-        prop.load(input);
-
-        casterUrl = prop.getProperty("caster.url");
-        String chromeDriver = prop.getProperty("webdriver.chrome.driver");
         System.setProperty("webdriver.chrome.driver", chromeDriver);
     }
 
     String getUrl() {
-       return casterUrl;
+        return casterUrl;
     }
 
 }
