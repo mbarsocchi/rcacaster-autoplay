@@ -30,6 +30,7 @@ public class BrowserProcess {
     private final By playBtn;
     private final By pauseBtn;
     private final By audioEl;
+    private ApplicationWrapper ap;
 
     public static enum State {
         NO_STREAM,
@@ -57,7 +58,10 @@ public class BrowserProcess {
         audioEl = By.id("jp_audio_0");
         pauseBtn = By.xpath("//a[@class=\"jp-pause\"]");
         playBtn = By.xpath("//a[@class=\"jp-play\"]");
-
+        ap = new ApplicationWrapper();
+        ap.setWhenStartsPlayCmd(System.getProperty("whenStartsPlayCmd"));
+        ap.setWhenGoToPause(System.getProperty("whenGoToPause"));
+        ap.setWhenEnded(System.getProperty("whenEnded"));
     }
 
     public void manageNotPlaying() {
@@ -70,6 +74,7 @@ public class BrowserProcess {
                 if (previousState == BrowserProcess.State.PLAYING) {
                     this.reloadPage();
                 }
+                ap.whenStartsPlay();
                 this.play();
                 break;
             case PLAYING:
@@ -100,6 +105,10 @@ public class BrowserProcess {
                 }
             }
         }
+        if (previousState == BrowserProcess.State.PLAYING && status == State.PAUSED
+                || previousState == BrowserProcess.State.PLAYING && status == State.NO_STREAM) {
+            ap.whenGoToPause();
+        }
 
     }
 
@@ -126,6 +135,7 @@ public class BrowserProcess {
         try {
             driver.quit();
             Runtime.getRuntime().exec(cmd);
+            ap.whenEnded();
         } catch (IOException ex) {
             Logger.getLogger(BrowserProcess.class.getName()).log(Level.SEVERE, null, ex);
         }
