@@ -6,8 +6,8 @@
 package com.mirobarsa.autoplay;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,7 +18,7 @@ public class ApplicationWrapper {
     private String whenGoToPause;
     private String whenStartsPlayCmd;
     private String whenEnded;
-
+    private static Logger LOGGER = LoggerFactory.getLogger(ApplicationWrapper.class);
 
     public void setWhenGoToPause(String whenGoToPause) {
         this.whenGoToPause = whenGoToPause;
@@ -37,20 +37,23 @@ public class ApplicationWrapper {
             try {
                 Runtime.getRuntime().exec(cmd);
             } catch (IOException ex) {
-                Logger.getLogger(ApplicationWrapper.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error (ex.getMessage());
             }
         }
     }
 
     public void whenGoToPause() {
+        LOGGER.info("Stream in pause");
         execute(whenGoToPause);
     }
 
     public void whenStartsPlay() {
+        LOGGER.info("Stream play");
         execute(whenStartsPlayCmd);
     }
 
     public void whenEnded() {
         execute(whenEnded);
+        LOGGER.info("Stream ended.");
     }
 }

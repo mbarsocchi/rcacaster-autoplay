@@ -3,10 +3,12 @@ package com.mirobarsa.autoplay;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import static java.lang.Thread.sleep;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         ArgParser config = new ArgParser(args);
@@ -19,7 +21,7 @@ public class Main {
                     }
                     sleep(4000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex.getMessage());
                 }
             }
         } catch (Exception ex) {

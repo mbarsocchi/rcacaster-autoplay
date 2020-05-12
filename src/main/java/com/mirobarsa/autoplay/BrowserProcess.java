@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.SystemUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -31,6 +31,7 @@ public class BrowserProcess {
     private final By pauseBtn;
     private final By audioEl;
     private ApplicationWrapper ap;
+    private static Logger LOGGER = LoggerFactory.getLogger(BrowserProcess.class);
 
     public static enum State {
         NO_STREAM,
@@ -74,13 +75,12 @@ public class BrowserProcess {
                 if (previousState == BrowserProcess.State.PLAYING) {
                     this.reloadPage();
                 }
-                ap.whenStartsPlay();
                 this.play();
                 break;
             case PLAYING:
                 break;
             default:
-                System.out.println("Unrecognized status: " + status);
+                LOGGER.error("Unrecognized status: " + status);
         }
     }
 
@@ -95,21 +95,23 @@ public class BrowserProcess {
 
         previousState = status;
         if (audioElements.isEmpty()) {
+            LOGGER.debug("NO_STREAM");
             status = State.NO_STREAM;
         } else {
             if (pauseElements.get(0).isDisplayed()) {
+                LOGGER.debug("PLAYING");
                 status = State.PLAYING;
             } else {
                 if (!playElements.isEmpty()) {
+                    LOGGER.debug("PAUSED");
                     status = State.PAUSED;
                 }
             }
         }
-        if (previousState == BrowserProcess.State.PLAYING && status == State.PAUSED
-                || previousState == BrowserProcess.State.PLAYING && status == State.NO_STREAM) {
+        if ((previousState == State.PLAYING && status == State.PAUSED)
+                || (previousState == State.PLAYING && status == State.NO_STREAM)) {
             ap.whenGoToPause();
         }
-
     }
 
     public State getStatus() {
@@ -122,6 +124,7 @@ public class BrowserProcess {
         if (!playElements.isEmpty()) {
             if (playElements.get(0).isDisplayed()) {
                 playElements.get(0).click();
+                ap.whenStartsPlay();
             }
         }
         this.evaluateStatus();
@@ -137,7 +140,7 @@ public class BrowserProcess {
             Runtime.getRuntime().exec(cmd);
             ap.whenEnded();
         } catch (IOException ex) {
-            Logger.getLogger(BrowserProcess.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         }
     }
 }
