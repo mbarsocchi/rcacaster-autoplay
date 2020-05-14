@@ -30,8 +30,8 @@ public class BrowserProcess {
     private final By playBtn;
     private final By pauseBtn;
     private final By audioEl;
-    private ApplicationWrapper ap;
-    private static Logger LOGGER = LoggerFactory.getLogger(BrowserProcess.class);
+    private final ApplicationWrapper ap;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BrowserProcess.class);
 
     public static enum State {
         NO_STREAM,
@@ -69,7 +69,6 @@ public class BrowserProcess {
         switch (status) {
             case NO_STREAM:
                 this.reloadPage();
-                evaluateStatus();
                 break;
             case PAUSED:
                 if (previousState == BrowserProcess.State.PLAYING) {
@@ -86,6 +85,7 @@ public class BrowserProcess {
 
     private void reloadPage() {
         driver.navigate().refresh();
+        this.evaluateStatus();
     }
 
     private void evaluateStatus() {

@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
  */
 class ArgParser {
 
-    private String casterUrl;
-    private static Logger LOGGER = LoggerFactory.getLogger(ArgParser.class);
+    private final String casterUrl;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArgParser.class);
 
     ArgParser(String[] args) throws IOException {
         String propertyPath = null;

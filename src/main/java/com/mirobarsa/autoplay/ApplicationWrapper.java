@@ -18,7 +18,7 @@ public class ApplicationWrapper {
     private String whenGoToPause;
     private String whenStartsPlayCmd;
     private String whenEnded;
-    private static Logger LOGGER = LoggerFactory.getLogger(ApplicationWrapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationWrapper.class);
 
     public void setWhenGoToPause(String whenGoToPause) {
         this.whenGoToPause = whenGoToPause;
