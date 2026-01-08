@@ -6,12 +6,12 @@
 package com.mirobarsa.autoplay;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -49,7 +49,7 @@ public class BrowserProcess {
         options.addArguments("disable-web-security");
         options.addArguments("disable-popup-blocking");
         ChromeDriver chromeDriver = new ChromeDriver(options);
-        chromeDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
         return chromeDriver;
     }
 
